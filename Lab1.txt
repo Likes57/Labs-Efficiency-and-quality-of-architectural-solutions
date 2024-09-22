@@ -1,0 +1,71 @@
+// Клас StorageManager відповідає за управління файлами користувача через сховища.
+class StorageManager {
+    private static instance: StorageManager  // Єдиний екземпляр класу
+    
+    private constructor() {}  // Приватний конструктор
+    
+    public static getInstance(): StorageManager {
+        if (StorageManager.instance == null) {
+            StorageManager.instance = new StorageManager()
+        }
+        return StorageManager.instance
+    }
+    
+    // Метод для підключення до сховища
+    public connectToStorage(userID: string, storageType: string): void {
+        // Вибір сховища на основі типу
+        if (storageType == "local") {
+            // Підключення до локального диску
+        } else if (storageType == "amazon_s3") {
+            // Підключення до Amazon S3
+        }
+        // Можливість додати нові сховища в майбутньому
+    }
+    
+    public uploadFile(userID: string, filePath: string): void {
+        // Логіка завантаження файлу в обране користувачем сховище
+    }
+
+    public downloadFile(userID: string, fileID: string): void {
+        // Логіка завантаження файлу з обраного сховища
+    }
+}
+
+// Клас User зберігає інформацію про користувача і його сховище
+class User {
+    private userID: string
+    private selectedStorage: string
+    
+    public constructor(userID: string, selectedStorage: string) {
+        this.userID = userID
+        this.selectedStorage = selectedStorage
+    }
+    
+    public getSelectedStorage(): string {
+        return this.selectedStorage
+    }
+    
+    public setSelectedStorage(newStorage: string): void {
+        this.selectedStorage = newStorage
+    }
+}
+
+// Основний код
+class Application {
+    public main(): void {
+        // Створення екземпляру User
+        User user = new User("12345", "local")
+        
+        // Отримання екземпляру StorageManager
+        StorageManager storageManager = StorageManager.getInstance()
+        
+        // Підключення до обраного користувачем сховища
+        storageManager.connectToStorage(user.userID, user.getSelectedStorage())
+        
+        // Шлях
+        storageManager.uploadFile(user.userID, "path/to/file")
+        
+        // Ім'я файлу
+        storageManager.downloadFile(user.userID, "fileID123")
+    }
+}
