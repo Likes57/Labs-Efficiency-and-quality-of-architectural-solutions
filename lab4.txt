@@ -1,0 +1,119 @@
+<?php
+
+// Інтерфейс Notification
+interface Notification
+{
+    public function send(string $title, string $message);
+}
+
+// Клас для відправки email-повідомлень
+class EmailNotification implements Notification
+{
+    private $adminEmail;
+
+    public function __construct(string $adminEmail)
+    {
+        $this->adminEmail = $adminEmail;
+    }
+
+    public function send(string $title, string $message): void
+    {
+        // Логіка для відправки email
+        echo "Sent email with title '$title' to '{$this->adminEmail}' that says '$message'.";
+    }
+}
+
+// Клас для відправки повідомлень через Slack (сервіс, що потребує адаптації)
+class SlackService
+{
+    private $login;
+    private $apiKey;
+    private $chatId;
+
+    public function __construct(string $login, string $apiKey, string $chatId)
+    {
+        $this->login = $login;
+        $this->apiKey = $apiKey;
+        $this->chatId = $chatId;
+    }
+
+    public function sendMessage(string $message): void
+    {
+        // Логіка для відправки повідомлення в Slack
+        echo "Sent message to Slack chat '{$this->chatId}' with message: '$message'.";
+    }
+}
+
+// Адаптер для інтеграції Slack з Notification
+class SlackNotificationAdapter implements Notification
+{
+    private $slackService;
+
+    public function __construct(SlackService $slackService)
+    {
+        $this->slackService = $slackService;
+    }
+
+    public function send(string $title, string $message): void
+    {
+        // Використовуємо SlackService для відправки повідомлення
+        $this->slackService->sendMessage("[$title] $message");
+    }
+}
+
+// Клас для відправки SMS (сервіс, що потребує адаптації)
+class SMSService
+{
+    private $phone;
+    private $sender;
+
+    public function __construct(string $phone, string $sender)
+    {
+        $this->phone = $phone;
+        $this->sender = $sender;
+    }
+
+    public function sendSMS(string $message): void
+    {
+        // Логіка для відправки SMS
+        echo "Sent SMS to '{$this->phone}' from '{$this->sender}' with message: '$message'.";
+    }
+}
+
+// Адаптер для інтеграції SMS з Notification
+class SMSNotificationAdapter implements Notification
+{
+    private $smsService;
+
+    public function __construct(SMSService $smsService)
+    {
+        $this->smsService = $smsService;
+    }
+
+    public function send(string $title, string $message): void
+    {
+        // SMSService для відправки повідомлення
+        $this->smsService->sendSMS("[$title] $message");
+    }
+}
+
+// Клієнтський код
+function clientCode(Notification $notification)
+{
+    $notification->send("Alert", "This is a notification message.");
+}
+
+// Використання EmailNotification
+$emailNotification = new EmailNotification("admin@example.com");
+clientCode($emailNotification);
+
+// Використання Slack через адаптер
+$slackService = new SlackService("login", "apiKey", "chat123");
+$slackNotification = new SlackNotificationAdapter($slackService);
+clientCode($slackNotification);
+
+// Використання SMS через адаптер
+$smsService = new SMSService("123456789", "MyCompany");
+$smsNotification = new SMSNotificationAdapter($smsService);
+clientCode($smsNotification);
+?>
