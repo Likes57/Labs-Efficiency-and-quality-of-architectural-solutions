@@ -1,0 +1,98 @@
+// Інтерфейс SQLQueryBuilder оголошує спільні методи для будівельників запитів
+interface SQLQueryBuilder {
+    // Метод для вибору полів
+    method select(fields: string[]): SQLQueryBuilder
+
+    // Метод для додавання умов
+    method where(condition: string): SQLQueryBuilder
+
+    // Метод для обмеження кількості результатів
+    method limit(count: int): SQLQueryBuilder
+
+    // Метод для отримання згенерованого SQL-запиту
+    method getSQL(): string
+}
+
+// Конкретний будівельник для PostgreSQL
+class PostgreSQLQueryBuilder implements SQLQueryBuilder {
+    private query: string
+
+    public method select(fields: string[]): SQLQueryBuilder {
+        // Логіка для генерації SELECT запиту для PostgreSQL
+        return this
+    }
+
+    public method where(condition: string): SQLQueryBuilder {
+        // Логіка для додавання WHERE умов в PostgreSQL
+        return this
+    }
+
+    public method limit(count: int): SQLQueryBuilder {
+        // Логіка для додавання LIMIT в PostgreSQL
+        return this
+    }
+
+    public method getSQL(): string {
+        // Повернення згенерованого SQL-запиту
+        return this.query
+    }
+}
+
+// Конкретний будівельник для MySQL
+class MySQLQueryBuilder implements SQLQueryBuilder {
+    private query: string
+
+    public method select(fields: string[]): SQLQueryBuilder {
+        // Логіка для генерації SELECT запиту для MySQL
+        return this
+    }
+
+    public method where(condition: string): SQLQueryBuilder {
+        // Логіка для додавання WHERE умов в MySQL
+        return this
+    }
+
+    public method limit(count: int): SQLQueryBuilder {
+        // Логіка для додавання LIMIT в MySQL
+        return this
+    }
+
+    public method getSQL(): string {
+        // Повернення згенерованого SQL-запиту
+        return this.query
+    }
+}
+
+// Директор, який керує будівництвом запиту
+class Director {
+    private builder: SQLQueryBuilder
+
+    public constructor(builder: SQLQueryBuilder) {
+        this.builder = builder
+    }
+
+    public method buildSimpleQuery(): string {
+        return this.builder
+            .select(["id", "name"])
+            .where("age > 18")
+            .limit(10)
+            .getSQL()
+    }
+}
+
+// Основний код для роботи з обома СУБД
+class Application {
+    public method main() {
+        // Створення об'єкту будівельника для PostgreSQL
+        SQLQueryBuilder postgreSQLBuilder = new PostgreSQLQueryBuilder()
+        Director director = new Director(postgreSQLBuilder)
+        string postgreSQLQuery = director.buildSimpleQuery()
+        print(postgreSQLQuery)
+
+        // Створення об'єкту будівельника для MySQL
+        SQLQueryBuilder mySQLBuilder = new MySQLQueryBuilder()
+        director = new Director(mySQLBuilder)
+        string mySQLQuery = director.buildSimpleQuery()
+        print(mySQLQuery)
+    }
+}
