@@ -1,0 +1,107 @@
+// Інтерфейс рендерера 
+interface Renderer {
+    method render(content: String): String
+}
+
+// Реалізація HTML Renderer
+class HTMLRenderer implements Renderer {
+    method render(content: String): String {
+        // Рендеринг у форматі HTML
+        return "<html><body>" + content + "</body></html>"
+    }
+}
+
+// Реалізація JSON Renderer
+class JsonRenderer implements Renderer {
+    method render(content: String): String {
+        // Рендеринг у форматі JSON
+        return "{ 'content': '" + content + "' }"
+    }
+}
+
+// Реалізація XML Renderer
+class XmlRenderer implements Renderer {
+    method render(content: String): String {
+        // Рендеринг у форматі XML
+        return "<xml><content>" + content + "</content></xml>"
+    }
+}
+
+// Абстрактний клас сторінки
+abstract class Page {
+    protected renderer: Renderer
+
+    constructor(renderer: Renderer) {
+        this.renderer = renderer
+    }
+
+    abstract method render(): String
+}
+
+// Проста сторінка (SimplePage)
+class SimplePage extends Page {
+    protected title: String
+    protected content: String
+
+    constructor(title: String, content: String, renderer: Renderer) {
+        this.title = title
+        this.content = content
+        super(renderer)
+    }
+
+    method render(): String {
+        // Формування контенту для рендерингу простої сторінки
+        return this.renderer.render("Title: " + this.title + ", Content: " + this.content)
+    }
+}
+
+// Сторінка товару (ProductPage)
+class ProductPage extends Page {
+    protected product: Product
+
+    constructor(product: Product, renderer: Renderer) {
+        this.product = product
+        super(renderer)
+    }
+
+    method render(): String {
+        // Формування контенту для рендерингу сторінки товару
+        return this.renderer.render("Product: " + this.product.name + 
+                                    ", Description: " + this.product.description +
+                                    ", Image: " + this.product.image + 
+                                    ", ID: " + this.product.id)
+    }
+}
+
+// Клас продукту (Product)
+class Product {
+    public name: String
+    public description: String
+    public image: String
+    public id: String
+
+    constructor(name: String, description: String, image: String, id: String) {
+        this.name = name
+        this.description = description
+        this.image = image
+        this.id = id
+    }
+}
+
+// Клієнтський код
+htmlRenderer = new HTMLRenderer()
+jsonRenderer = new JsonRenderer()
+xmlRenderer = new XmlRenderer()
+
+// Створюємо сторінки з різними рендерами
+simplePage = new SimplePage("About Us", "Welcome to our website.", htmlRenderer)
+product = new Product("Laptop", "High performance laptop", "laptop.jpg", "12345")
+productPage = new ProductPage(product, jsonRenderer)
+
+// Виконуємо рендеринг сторінок
+output1 = simplePage.render()  // Рендер простої сторінки у форматі HTML
+output2 = productPage.render()  // Рендер сторінки товару у форматі JSON
+
+// Виведення результатів рендерингу
+print(output1)  // <html><body>Title: About Us, Content: Welcome to our website.</body></html>
+print(output2)  // { 'content': 'Product: Laptop, Description: High performance laptop, Image: laptop.jpg, ID: 12345' }
