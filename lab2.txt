@@ -1,0 +1,102 @@
+// Інтерфейс SocialNetwork визначає загальні методи для всіх соціальних мереж
+interface SocialNetwork {
+    // Метод для підключення до соціальної мережі
+    method login(username: string, password: string)
+    
+    // Метод для публікації повідомлення
+    method postMessage(message: string)
+}
+
+// Клас Facebook реалізує інтерфейс SocialNetwork
+class Facebook implements SocialNetwork {
+    private login: string
+    private password: string
+
+    public constructor(login: string, password: string) {
+        this.login = login
+        this.password = password
+    }
+
+    public method login(username: string, password: string) {
+        // Логіка підключення до Facebook
+    }
+
+    public method postMessage(message: string) {
+        // Логіка публікації повідомлення у Facebook
+    }
+}
+
+// Клас LinkedIn реалізує інтерфейс SocialNetwork
+class LinkedIn implements SocialNetwork {
+    private email: string
+    private password: string
+
+    public constructor(email: string, password: string) {
+        this.email = email
+        this.password = password
+    }
+
+    public method login(email: string, password: string) {
+        // Логіка підключення до LinkedIn
+    }
+
+    public method postMessage(message: string) {
+        // Логіка публікації повідомлення у LinkedIn
+    }
+}
+
+// Абстрактний клас SocialNetworkCreator — фабрика для створення об'єктів соціальних мереж
+abstract class SocialNetworkCreator {
+    // Фабричний метод для створення об'єкта соціальної мережі
+    abstract method createSocialNetwork(): SocialNetwork
+    
+    // Шаблонний метод для публікації повідомлення
+    public method postToNetwork(message: string) {
+        SocialNetwork network = this.createSocialNetwork()
+        network.login(/* дані для логіну */)
+        network.postMessage(message)
+    }
+}
+
+// Конкретна фабрика для створення об'єкта Facebook
+class FacebookCreator extends SocialNetworkCreator {
+    private login: string
+    private password: string
+
+    public constructor(login: string, password: string) {
+        this.login = login
+        this.password = password
+    }
+
+    public method createSocialNetwork(): SocialNetwork {
+        return new Facebook(this.login, this.password)
+    }
+}
+
+// Конкретна фабрика для створення об'єкта LinkedIn
+class LinkedInCreator extends SocialNetworkCreator {
+    private email: string
+    private password: string
+
+    public constructor(email: string, password: string) {
+        this.email = email
+        this.password = password
+    }
+
+    public method createSocialNetwork(): SocialNetwork {
+        return new LinkedIn(this.email, this.password)
+    }
+}
+
+// Основний код програми
+class Application {
+    public method main() {
+        // Публікація повідомлення у Facebook
+        SocialNetworkCreator facebookCreator = new FacebookCreator("user_fb", "pass_fb")
+        facebookCreator.postToNetwork("Hello Facebook!")
+        
+        // Публікація повідомлення у LinkedIn
+        SocialNetworkCreator linkedInCreator = new LinkedInCreator("user_linkedin@mail.com", "pass_linkedin")
+        linkedInCreator.postToNetwork("Hello LinkedIn!")
+    }
+}
