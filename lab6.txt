@@ -1,0 +1,63 @@
+interface Downloader {
+    method download(filePath: String): File
+}
+
+class SimpleDownloader implements Downloader {
+    method download(filePath: String): File {
+        // Логіка завантаження файлу з зовнішнього джерела
+    }
+}
+
+class CachedDownloader implements Downloader {
+    private field downloader: Downloader
+    private field cache: Map<String, File>
+
+    constructor CachedDownloader(downloader: Downloader) {
+        this.downloader = downloader
+        this.cache = new Map<String, File>()
+    }
+
+    method download(filePath: String): File {
+        if (cache.containsKey(filePath)) {
+            // Повернути файл
+            return cache.get(filePath)
+        } else {
+            // Виклик завантаження
+            file = downloader.download(filePath)
+            // Додати файл до кешу
+            cache.put(filePath, file)
+            return file
+        }
+    }
+}
+
+class FileManager {
+    private field downloader: Downloader
+
+    constructor FileManager(downloader: Downloader) {
+        this.downloader = downloader
+    }
+
+    method displayFile(filePath: String): void {
+        file = downloader.download(filePath)
+        // Логіка відображення файлу
+    }
+}
+
+class Application {
+    method init(): void {
+        // Створення базового завантажувача
+        simpleDownloader = new SimpleDownloader()
+        // Створення замісника з кешуванням
+        cachedDownloader = new CachedDownloader(simpleDownloader)
+
+        // Використання з дефолтним класом
+        fileManager1 = new FileManager(simpleDownloader)
+        fileManager1.displayFile("file1.txt")
+
+        // Використання з замісником
+        fileManager2 = new FileManager(cachedDownloader)
+        fileManager2.displayFile("file1.txt")
+        fileManager2.displayFile("file2.txt")
+    }
+}
